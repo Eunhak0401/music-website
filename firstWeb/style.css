@@ -1,0 +1,24 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.first_section {
+    padding-top: 30px;
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.head {}
+
+.head_in_box {}
+
+.scond section {
+    width: 1920px;
+    height: 400px;
+}
+
+.body {
+    width: 1920px;
+    height: 400px;
+}
