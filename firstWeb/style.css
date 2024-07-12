@@ -3,22 +3,45 @@
     padding: 0;
 }
 
-.first_section {
-    padding-top: 30px;
-    width: 1200px;
+.section {
+    padding-top: 20px;
+    padding-left: 70px;
+    width: 1830px;
     margin: 0 auto;
 }
 
 .head {}
 
-.head_in_box {}
-
-.scond section {
-    width: 1920px;
-    height: 400px;
+.head_in_box {
+    font-weight: bold;
 }
 
 .body {
-    width: 1920px;
-    height: 400px;
+    width: 1698px;
+    height: 365px;
+    border: solid black;
+    margin-left: 30px;
+     border-radius: 30px;
+     display: flex;
+}
+.body_name{
+    margin-left: 30px;
+    margin-bottom: 10px;
+}
+.body_in_button{
+    border-radius: 25px;
+    flex: content;
+    font-size: 50px;
+}
+.body2{
+    width: 1698px;
+    height: 365px;
+    border: solid black;
+    margin-left: 30px;
+    border-radius: 30px;
+    display: flex;
+}
+.body2_name{
+    margin-left: 40px;
+    margin-bottom: 10px;
 }
