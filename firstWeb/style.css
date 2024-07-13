@@ -45,3 +45,35 @@
     margin-left: 40px;
     margin-bottom: 10px;
 }
+.body3{
+    width: 1698px;
+    height: 365px;
+    border: solid black;
+    margin-left: 30px;
+    border-radius: 30px;
+    display: flex;
+}
+.body3_name{
+    margin-left: 40px;
+    margin-bottom: 10px;
+}
+.body4{
+    border-radius: 30px;
+    margin-top: 50px;
+    margin-left: 40px;
+    margin-bottom: 50px;
+    width: 1685px;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    border: solid #373737;
+
+}
+.body4_in_button{
+    background-color: #373737;
+    color: white;
+    font-size: 72px;
+    width: 1685px;
+    height: 180px;
+    border-radius: 25px;
+}
