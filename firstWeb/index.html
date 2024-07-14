@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>first Web</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+        #fileUpload {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,19 +22,22 @@
     <section class="section">
         <div class="body_name">Image Background</div>
         <div class="body">
-            <button class="body_in_button">+</button>
+            <button class="body_in_button" onclick="document.getElementById('fileUpload').click();">+</button>
+            <input type="file" id="fileUpload" />
         </div>
     </section>
     <section class="section">
         <div class="body2_name">Image Center</div>
         <div class="body2">
-            <button class="body_in_button">+</button>
+            <button class="body_in_button" onclick="document.getElementById('fileUpload').click();">+</button>
+            <input type="file" id="fileUpload" />
         </div>
     </section>
     <section class="section">
         <div class="body3_name">Audio MP3</div>
         <div class="body3">
-            <button class="body_in_button">+</button>
+            <button class="body_in_button" onclick="document.getElementById('fileUpload').click();">+</button>
+            <input type="file" id="fileUpload" />
         </div>
     </section>
     <section class="section">
