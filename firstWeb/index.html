@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <script scr="script.js"></script>
+    <script src="script.js"></script>
     <section class="section">
         <div class="head">
             <div class="head_in_box">File Upload</div>
@@ -27,6 +27,17 @@
             <input type="file" id="fileUpload" />
             <div id="fileName"></div>
         </div>
+        
+        <!-- <script>
+            document.getElementById('fileUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+            document.querySelector('.body_in_button').style.display = 'none';
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileName').style.display = 'block';
+    }
+});
+        </script> -->
     </section>
     <section class="section">
         <div class="body2_name">Image Center</div>
