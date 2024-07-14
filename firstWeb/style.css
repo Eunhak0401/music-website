@@ -77,3 +77,12 @@
     height: 180px;
     border-radius: 25px;
 }
+.fileName{
+    justify-content: center;
+}
+.file{
+    justify-content: center;
+}
+.fileUpload{
+    justify-content: center;
+}
