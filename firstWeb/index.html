@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>first Web</title>
+    <title>Single Page File Execution</title>
     <link rel="stylesheet" href="style.css" />
     <style>
         #fileUpload {
@@ -14,7 +14,6 @@
 </head>
 
 <body>
-    <script src="script.js"></script>
     <section class="section">
         <div class="head">
             <div class="head_in_box">File Upload</div>
@@ -23,41 +22,117 @@
     <section class="section">
         <div class="body_name">Image Background</div>
         <div class="body">
-            <button class="body_in_button" onclick="document.getElementById('fileUpload').click();">+</button>
-            <input type="file" id="fileUpload" />
-            <div id="fileName"></div>
+            <button class="body_in_button" onclick="document.getElementById('fileUploadImage').click();">+</button>
+            <input type="file" id="fileUploadImage" accept="image/*" style="display: none;" />
+            <div id="fileNameImage"></div>
         </div>
-        
-        <!-- <script>
-            document.getElementById('fileUpload').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-            document.querySelector('.body_in_button').style.display = 'none';
-            document.getElementById('fileName').textContent = file.name;
-            document.getElementById('fileName').style.display = 'block';
-    }
-});
-        </script> -->
     </section>
     <section class="section">
         <div class="body2_name">Image Center</div>
         <div class="body2">
-            <button class="body_in_button" onclick="document.getElementById('fileUpload').click();">+</button>
-            <input type="file" id="fileUpload" />
+            <button class="body_in_button" onclick="document.getElementById('fileUploadCenterImage').click();">+</button>
+            <input type="file" id="fileUploadCenterImage" accept="image/*" style="display: none;" />
+            <div id="fileNameCenterImage"></div>
         </div>
     </section>
     <section class="section">
         <div class="body3_name">Audio MP3</div>
         <div class="body3">
-            <button class="body_in_button" onclick="document.getElementById('fileUpload').click();">+</button>
-            <input type="file" id="fileUpload" />
+            <button class="body_in_button" onclick="document.getElementById('fileUploadAudio').click();">+</button>
+            <input type="file" id="fileUploadAudio" accept="audio/*" style="display: none;" />
+            <div id="fileNameAudio"></div>
         </div>
     </section>
     <section class="section">
         <div class="body4">
-            <button class="body4_in_button">Play Web</div>
+            <!-- "Play Web" 버튼 클릭 시 파일을 실행 -->
+            <button onclick="playFiles()" class="body4_in_button">Play Web</button>
         </div>
     </section>
+
+    <!-- 이미지와 오디오를 표시할 위치 -->
+    <section class="section" id="displaySection" style="display: none;">
+        <h2>Uploaded Content</h2>
+        <div>
+            <img id="uploadedImageBackground" alt="Background Image" style="max-width: 100%;" />
+        </div>
+        <div>
+            <img id="uploadedCenterImage" alt="Center Image" style="max-width: 100%;" />
+        </div>
+        <div>
+            <audio id="bgMusic" controls autoplay loop></audio>
+        </div>
+    </section>
+
+    <script>
+        // 이미지 배경 파일 처리
+        document.getElementById('fileUploadImage').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64Image = e.target.result;
+                    sessionStorage.setItem('imageFile', base64Image); // Base64 이미지 데이터를 sessionStorage에 저장
+                    document.getElementById('fileNameImage').textContent = file.name; // 이미지 파일 이름 표시
+                    document.getElementById('uploadedImageBackground').src = base64Image; // 이미지 표시
+                };
+                reader.readAsDataURL(file); // 파일을 Base64로 인코딩
+            }
+        });
+
+        // 중앙 이미지 파일 처리
+        document.getElementById('fileUploadCenterImage').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64Image = e.target.result;
+                    sessionStorage.setItem('centerImageFile', base64Image); // Base64 중앙 이미지 데이터를 sessionStorage에 저장
+                    document.getElementById('fileNameCenterImage').textContent = file.name; // 이미지 파일 이름 표시
+                    document.getElementById('uploadedCenterImage').src = base64Image; // 이미지 표시
+                };
+                reader.readAsDataURL(file); // 파일을 Base64로 인코딩
+            }
+        });
+
+        // 오디오 파일 처리
+        document.getElementById('fileUploadAudio').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64Audio = e.target.result;
+                    sessionStorage.setItem('audioFile', base64Audio); // Base64 오디오 데이터를 sessionStorage에 저장
+                    document.getElementById('fileNameAudio').textContent = file.name; // 오디오 파일 이름 표시
+                    document.getElementById('bgMusic').src = base64Audio; // 오디오 소스 설정
+                };
+                reader.readAsDataURL(file); // 파일을 Base64로 인코딩
+            }
+        });
+
+        // "Play Web" 버튼을 클릭했을 때 파일을 실행하는 함수
+        function playFiles() {
+            document.getElementById('displaySection').style.display = 'block'; // 파일을 표시하는 섹션을 보여줌
+
+            const base64Image = sessionStorage.getItem('imageFile');
+            const base64CenterImage = sessionStorage.getItem('centerImageFile');
+            const base64Audio = sessionStorage.getItem('audioFile');
+
+            if (base64Image) {
+                document.getElementById('uploadedImageBackground').src = base64Image; // 저장된 이미지 데이터를 설정
+            }
+
+            if (base64CenterImage) {
+                document.getElementById('uploadedCenterImage').src = base64CenterImage; // 저장된 중앙 이미지 데이터를 설정
+            }
+
+            if (base64Audio) {
+                const audioElement = document.getElementById('bgMusic');
+                audioElement.src = base64Audio; // 저장된 오디오 데이터를 설정
+                audioElement.play(); // 오디오 재생
+            }
+        }
+    </script>
 </body>
 
 </html>
