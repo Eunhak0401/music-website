@@ -4,133 +4,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Single Page File Execution</title>
+    <title>음악 재생 웹 페이지</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-        #fileUpload {
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #fileUploadImage, #fileUploadCenterImage, #fileUploadAudio {
             display: none;
+        }
+
+        #displaySection {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #uploadedImageBackground {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        #audioSpectrum {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            background: transparent; 
+        }
+
+        #audioSpectrumOverlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            background: transparent; 
+        }
+
+        #bgMusic {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            z-index: 3;
+        }
+
+        .section {
+            margin: 0;
+            padding: 0;
+            
+            
+        }
+
+        .body, .body2, .body3 {
+            width: 100%;
+            height: 365px;
+            border: solid black;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            box-sizing: border-box;
+            
+            
+            
+        }
+
+        .body_name, .body2_name, .body3_name {
+            margin-bottom: 10px;
+            
+        }
+
+        .body_in_button {
+            border-radius: 25px;
+            font-size: 50px;
+            flex: 0 0 auto;
+            padding: 10px;
+        }
+
+        .body4 {
+            border-radius: 30px;
+            margin: 50px 40px;
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            border: solid #373737;
+            
+            
+        }
+
+        .body4_in_button {
+            background-color: #373737;
+            color: white;
+            font-size: 72px;
+            width: 100%;
+            height: 100%;
+            border-radius: 25px;
+            border: none;
+            
         }
     </style>
 </head>
 
 <body>
-    <section class="section">
+    <section class="section" id="uploadSection">
         <div class="head">
             <div class="head_in_box">File Upload</div>
         </div>
     </section>
-    <section class="section">
+    <section class="section" id="uploadImageBackgroundSection">
         <div class="body_name">Image Background</div>
         <div class="body">
-            <button class="body_in_button" onclick="document.getElementById('fileUploadImage').click();">+</button>
-            <input type="file" id="fileUploadImage" accept="image/*" style="display: none;" />
+            <button class='body_in_button' onclick="document.getElementById('fileUploadImage').click();">+</button>
+            <input type="file" id="fileUploadImage" accept="image/*" />
             <div id="fileNameImage"></div>
         </div>
     </section>
-    <section class="section">
+    <section class="section" id="uploadImageCenterSection">
         <div class="body2_name">Image Center</div>
         <div class="body2">
-            <button class="body_in_button" onclick="document.getElementById('fileUploadCenterImage').click();">+</button>
-            <input type="file" id="fileUploadCenterImage" accept="image/*" style="display: none;" />
+            <button class='body_in_button' onclick="document.getElementById('fileUploadCenterImage').click();">+</button>
+            <input type="file" id="fileUploadCenterImage" accept="image/*" />
             <div id="fileNameCenterImage"></div>
         </div>
     </section>
-    <section class="section">
+    <section class="section" id="uploadAudioSection">
         <div class="body3_name">Audio MP3</div>
         <div class="body3">
-            <button class="body_in_button" onclick="document.getElementById('fileUploadAudio').click();">+</button>
-            <input type="file" id="fileUploadAudio" accept="audio/*" style="display: none;" />
+            <button class='body_in_button' onclick="document.getElementById('fileUploadAudio').click();">+</button>
+            <input type="file" id="fileUploadAudio" accept="audio/*" />
             <div id="fileNameAudio"></div>
         </div>
     </section>
     <section class="section">
-        <div class="body4">
-            <!-- "Play Web" 버튼 클릭 시 파일을 실행 -->
-            <button onclick="playFiles()" class="body4_in_button">Play Web</button>
+        <div class="body4" id="PlayWeb">
+            <button class='body4_in_button' onclick="playFiles()">Play Web</button>
         </div>
     </section>
 
-    <!-- 이미지와 오디오를 표시할 위치 -->
-    <section class="section" id="displaySection" style="display: none;">
-        <h2>Uploaded Content</h2>
-        <div>
-            <img id="uploadedImageBackground" alt="Background Image" style="max-width: 100%;" />
-        </div>
-        <div>
-            <img id="uploadedCenterImage" alt="Center Image" style="max-width: 100%;" />
-        </div>
-        <div>
-            <audio id="bgMusic" controls autoplay loop></audio>
-        </div>
+    <section class="section" id="displaySection">
+        <img id="uploadedImageBackground" alt="Background Image" />
+        <canvas id="audioSpectrum"></canvas>
+        <canvas id="audioSpectrumOverlay"></canvas>
+        <audio id="bgMusic" controls autoplay loop></audio>
     </section>
 
     <script>
-        // 이미지 배경 파일 처리
-        document.getElementById('fileUploadImage').addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const base64Image = e.target.result;
-                    sessionStorage.setItem('imageFile', base64Image); // Base64 이미지 데이터를 sessionStorage에 저장
-                    document.getElementById('fileNameImage').textContent = file.name; // 이미지 파일 이름 표시
-                    document.getElementById('uploadedImageBackground').src = base64Image; // 이미지 표시
-                };
-                reader.readAsDataURL(file); // 파일을 Base64로 인코딩
-            }
-        });
+        function handleFileUpload(inputId, imgElementId, fileNameElementId, type) {
+            const input = document.getElementById(inputId);
+            const imgElement = document.getElementById(imgElementId);
+            const fileNameElement = document.getElementById(fileNameElementId);
 
-        // 중앙 이미지 파일 처리
-        document.getElementById('fileUploadCenterImage').addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const base64Image = e.target.result;
-                    sessionStorage.setItem('centerImageFile', base64Image); // Base64 중앙 이미지 데이터를 sessionStorage에 저장
-                    document.getElementById('fileNameCenterImage').textContent = file.name; // 이미지 파일 이름 표시
-                    document.getElementById('uploadedCenterImage').src = base64Image; // 이미지 표시
-                };
-                reader.readAsDataURL(file); // 파일을 Base64로 인코딩
-            }
-        });
+            input.addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    if (file.size > 30 * 1024 * 1024) { 
+                        alert('파일 크기가 너무 큽니다. 30MB 이하의 파일만 업로드할 수 있습니다.');
+                        return;
+                    }
+                    if (type === 'image') {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            imgElement.src = e.target.result;
+                            fileNameElement.textContent = file.name;
+                            localStorage.setItem(inputId, e.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    } else if (type === 'audio') {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            fileNameElement.textContent = file.name;
+                            localStorage.setItem(inputId, URL.createObjectURL(file));
+                        };
+                        reader.readAsArrayBuffer(file);
+                    }
+                }
+            });
+        }
 
-        // 오디오 파일 처리
-        document.getElementById('fileUploadAudio').addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const base64Audio = e.target.result;
-                    sessionStorage.setItem('audioFile', base64Audio); // Base64 오디오 데이터를 sessionStorage에 저장
-                    document.getElementById('fileNameAudio').textContent = file.name; // 오디오 파일 이름 표시
-                    document.getElementById('bgMusic').src = base64Audio; // 오디오 소스 설정
-                };
-                reader.readAsDataURL(file); // 파일을 Base64로 인코딩
-            }
-        });
+        handleFileUpload('fileUploadImage', 'uploadedImageBackground', 'fileNameImage', 'image');
+        handleFileUpload('fileUploadCenterImage', 'uploadedCenterImage', 'fileNameCenterImage', 'image');
+        handleFileUpload('fileUploadAudio', 'bgMusic', 'fileNameAudio', 'audio');
 
-        // "Play Web" 버튼을 클릭했을 때 파일을 실행하는 함수
         function playFiles() {
-            document.getElementById('displaySection').style.display = 'block'; // 파일을 표시하는 섹션을 보여줌
+            // 입력 섹션 숨기기
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('uploadImageBackgroundSection').style.display = 'none';
+            document.getElementById('uploadImageCenterSection').style.display = 'none';
+            document.getElementById('uploadAudioSection').style.display = 'none';
+            document.getElementById('PlayWeb').style.display = 'none';
+            
+            // 업로드된 콘텐츠 표시
+            document.getElementById('displaySection').style.display = 'block';
 
-            const base64Image = sessionStorage.getItem('imageFile');
-            const base64CenterImage = sessionStorage.getItem('centerImageFile');
-            const base64Audio = sessionStorage.getItem('audioFile');
+            const imageBackground = localStorage.getItem('fileUploadImage');
+            const audioFile = localStorage.getItem('fileUploadAudio');
 
-            if (base64Image) {
-                document.getElementById('uploadedImageBackground').src = base64Image; // 저장된 이미지 데이터를 설정
+            if (imageBackground) {
+                document.getElementById('uploadedImageBackground').src = imageBackground;
             }
 
-            if (base64CenterImage) {
-                document.getElementById('uploadedCenterImage').src = base64CenterImage; // 저장된 중앙 이미지 데이터를 설정
-            }
-
-            if (base64Audio) {
+            if (audioFile) {
                 const audioElement = document.getElementById('bgMusic');
-                audioElement.src = base64Audio; // 저장된 오디오 데이터를 설정
-                audioElement.play(); // 오디오 재생
+                audioElement.src = audioFile;
+                audioElement.play();
+                setupAudioSpectrum(audioElement);
             }
+        }
+
+        function setupAudioSpectrum(audioElement) {
+            const canvas = document.getElementById('audioSpectrum');
+            const canvasOverlay = document.getElementById('audioSpectrumOverlay');
+            const canvasCtx = canvas.getContext('2d');
+            const canvasOverlayCtx = canvasOverlay.getContext('2d');
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const analyser = audioCtx.createAnalyser();
+            const source = audioCtx.createMediaElementSource(audioElement);
+
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            canvas.width = canvasOverlay.width = 300;
+            canvas.height = canvasOverlay.height = 300;
+
+            function draw() {
+                requestAnimationFrame(draw);
+                analyser.getByteFrequencyData(dataArray);
+
+                canvasOverlayCtx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
+                canvasOverlayCtx.save();
+                canvasOverlayCtx.translate(canvasOverlay.width / 2, canvasOverlay.height / 2);
+
+                const radius = canvasOverlay.width / 2 - 10;
+                const barWidth = (canvasOverlay.width / bufferLength) * 2.5;
+                const barHeightFactor = 1.5;
+                let barHeight;
+                let angle;
+
+                canvasOverlayCtx.strokeStyle = 'white';
+                canvasOverlayCtx.lineWidth = 2;
+                canvasOverlayCtx.beginPath();
+                
+                for (let i = 0; i < bufferLength; i++) {
+                    barHeight = dataArray[i] * barHeightFactor;
+                    angle = (i / bufferLength) * Math.PI * 2;
+                    const x = radius * Math.cos(angle);
+                    const y = radius * Math.sin(angle);
+                    
+                    canvasOverlayCtx.moveTo(x, y);
+                    canvasOverlayCtx.lineTo(
+                        (radius + barHeight) * Math.cos(angle),
+                        (radius + barHeight) * Math.sin(angle)
+                    );
+                }
+                
+                canvasOverlayCtx.stroke();
+                canvasOverlayCtx.restore();
+            }
+
+            draw();
         }
     </script>
 </body>
