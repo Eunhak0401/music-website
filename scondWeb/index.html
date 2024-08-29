@@ -1,22 +1,91 @@
+<!-- HTML Structure -->
 <!DOCTYPE html>
-<html lang="ko">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>두 번째 페이지</title>
+    <title>NCS Style Audio Spectrum</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+        }
+        #audioSpectrum {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #centerImage {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+    </style>
 </head>
-
 <body>
-    <script src="script.js"></script>
-    <section>
-        <div>이미지 보기</div>
-        <img id="uploadedImage" alt="업로드된 이미지" style="max-width: 100%;" />
-    </section>
-    <section>
-        <div>오디오 재생</div>
-        <audio id="bgMusic" controls></audio>
-    </section>
-</body>
+    <!-- Center Image (Logo) -->
+    <img id="centerImage" src="your-logo.png" alt="Center Logo">
 
+    <!-- Audio Element -->
+    <audio id="bgMusic" controls autoplay loop src="your-audio.mp3"></audio>
+
+    <!-- Canvas for Spectrum -->
+    <canvas id="audioSpectrum"></canvas>
+
+    <script>
+        const audioElement = document.getElementById('bgMusic');
+        const canvas = document.getElementById('audioSpectrum');
+        const canvasCtx = canvas.getContext('2d');
+        const centerImage = document.getElementById('centerImage');
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioCtx.createAnalyser();
+        const source = audioCtx.createMediaElementSource(audioElement);
+
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        analyser.fftSize = 512; // Adjust for more or fewer bars
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function draw() {
+            requestAnimationFrame(draw);
+            analyser.getByteFrequencyData(dataArray);
+
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 150;
+            const maxBarHeight = 200;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const barHeight = (dataArray[i] / 255) * maxBarHeight;
+                const angle = (i / bufferLength) * Math.PI * 2;
+                const x1 = centerX + radius * Math.cos(angle);
+                const y1 = centerY + radius * Math.sin(angle);
+                const x2 = centerX + (radius + barHeight) * Math.cos(angle);
+                const y2 = centerY + (radius + barHeight) * Math.sin(angle);
+
+                const hue = i * 360 / bufferLength; // Rainbow effect
+                canvasCtx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+                canvasCtx.lineWidth = 3;
+                canvasCtx.beginPath();
+                canvasCtx.moveTo(x1, y1);
+                canvasCtx.lineTo(x2, y2);
+                canvasCtx.stroke();
+            }
+        }
+
+        draw();
+    </script>
+</body>
 </html>

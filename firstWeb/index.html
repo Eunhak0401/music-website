@@ -240,59 +240,54 @@
 
         function setupAudioSpectrum(audioElement) {
     const canvas = document.getElementById('audioSpectrum');
-    const canvasOverlay = document.getElementById('audioSpectrumOverlay');
     const canvasCtx = canvas.getContext('2d');
-    const canvasOverlayCtx = canvasOverlay.getContext('2d');
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const analyser = audioCtx.createAnalyser();
     const source = audioCtx.createMediaElementSource(audioElement);
 
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
-    analyser.fftSize = 512; // Higher fftSize for more frequency bars
+    analyser.fftSize = 4096; // Higher value for more bars
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
-    canvas.width = canvasOverlay.width = 300;
-    canvas.height = canvasOverlay.height = 300;
+    canvas.width = 800; // Increase canvas size for more visibility
+    canvas.height = 800;
 
     function draw() {
         requestAnimationFrame(draw);
         analyser.getByteFrequencyData(dataArray);
 
-        canvasOverlayCtx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
-        canvasOverlayCtx.save();
-        canvasOverlayCtx.translate(canvasOverlay.width / 2, canvasOverlay.height / 2);
+        // Clear canvas
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+        canvasCtx.save();
+        canvasCtx.translate(canvas.width / 2, canvas.height / 2);
 
-        const radius = canvasOverlay.width / 2 - 10; // Radius of the circle
-        const maxBarHeight = 300; // Maximum bar height
+        const outerRadius = canvas.width / 2.5; // Larger radius for external bars
+        const maxBarHeight = 600; // Increase maximum bar height
         let angle;
 
-        // Dynamic gradient color for a vibrant effect
-        const gradient = canvasOverlayCtx.createRadialGradient(0, 0, radius / 2, 0, 0, radius + maxBarHeight);
-        gradient.addColorStop(0, '#FF0000');
-        gradient.addColorStop(0.5, '#FFFF00');
-        gradient.addColorStop(1, '#00FF00');
-
-        canvasOverlayCtx.strokeStyle = gradient;
-        canvasOverlayCtx.lineWidth = 2;
-
+        // Draw bars with HSL color gradient
         for (let i = 0; i < bufferLength; i++) {
-            const barHeight = (dataArray[i] / 255) * maxBarHeight; // Dynamic scaling of bar height
-            angle = (i / bufferLength) * Math.PI * 2; // Angle for each bar
-            const startX = radius * Math.cos(angle); // Start at the circle's border
-            const startY = radius * Math.sin(angle);
-            const endX = (radius + barHeight) * Math.cos(angle); // Extend outside the circle
-            const endY = (radius + barHeight) * Math.sin(angle);
+            const barHeight = (dataArray[i] / 255) * maxBarHeight;
+            angle = (i / bufferLength) * Math.PI * 2;
+            const startX = outerRadius * Math.cos(angle);
+            const startY = outerRadius * Math.sin(angle);
+            const endX = (outerRadius + barHeight) * Math.cos(angle);
+            const endY = (outerRadius + barHeight) * Math.sin(angle);
+
+            const hue = (i / bufferLength) * 360; // Hue changes across the spectrum
+            canvasCtx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+            canvasCtx.lineWidth = 3;
 
             // Draw each bar
-            canvasOverlayCtx.beginPath();
-            canvasOverlayCtx.moveTo(startX, startY);
-            canvasOverlayCtx.lineTo(endX, endY);
-            canvasOverlayCtx.stroke();
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(startX, startY);
+            canvasCtx.lineTo(endX, endY);
+            canvasCtx.stroke();
         }
 
-        canvasOverlayCtx.restore();
+        canvasCtx.restore();
     }
 
     draw();
