@@ -239,60 +239,64 @@
         }
 
         function setupAudioSpectrum(audioElement) {
-            const canvas = document.getElementById('audioSpectrum');
-            const canvasOverlay = document.getElementById('audioSpectrumOverlay');
-            const canvasCtx = canvas.getContext('2d');
-            const canvasOverlayCtx = canvasOverlay.getContext('2d');
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const analyser = audioCtx.createAnalyser();
-            const source = audioCtx.createMediaElementSource(audioElement);
+    const canvas = document.getElementById('audioSpectrum');
+    const canvasOverlay = document.getElementById('audioSpectrumOverlay');
+    const canvasCtx = canvas.getContext('2d');
+    const canvasOverlayCtx = canvasOverlay.getContext('2d');
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioCtx.createAnalyser();
+    const source = audioCtx.createMediaElementSource(audioElement);
 
-            source.connect(analyser);
-            analyser.connect(audioCtx.destination);
-            analyser.fftSize = 256;
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    analyser.fftSize = 512; // Higher fftSize for more frequency bars
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
 
-            canvas.width = canvasOverlay.width = 300;
-            canvas.height = canvasOverlay.height = 300;
+    canvas.width = canvasOverlay.width = 300;
+    canvas.height = canvasOverlay.height = 300;
 
-            function draw() {
-                requestAnimationFrame(draw);
-                analyser.getByteFrequencyData(dataArray);
+    function draw() {
+        requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
 
-                canvasOverlayCtx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
-                canvasOverlayCtx.save();
-                canvasOverlayCtx.translate(canvasOverlay.width / 2, canvasOverlay.height / 2);
+        canvasOverlayCtx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
+        canvasOverlayCtx.save();
+        canvasOverlayCtx.translate(canvasOverlay.width / 2, canvasOverlay.height / 2);
 
-                const radius = canvasOverlay.width / 2 - 10;
-                const barWidth = (canvasOverlay.width / bufferLength) * 2.5;
-                const barHeightFactor = 1.5;
-                let barHeight;
-                let angle;
+        const radius = canvasOverlay.width / 2 - 10; // Radius of the circle
+        const maxBarHeight = 300; // Maximum bar height
+        let angle;
 
-                canvasOverlayCtx.strokeStyle = 'white';
-                canvasOverlayCtx.lineWidth = 2;
-                canvasOverlayCtx.beginPath();
-                
-                for (let i = 0; i < bufferLength; i++) {
-                    barHeight = dataArray[i] * barHeightFactor;
-                    angle = (i / bufferLength) * Math.PI * 2;
-                    const x = radius * Math.cos(angle);
-                    const y = radius * Math.sin(angle);
-                    
-                    canvasOverlayCtx.moveTo(x, y);
-                    canvasOverlayCtx.lineTo(
-                        (radius + barHeight) * Math.cos(angle),
-                        (radius + barHeight) * Math.sin(angle)
-                    );
-                }
-                
-                canvasOverlayCtx.stroke();
-                canvasOverlayCtx.restore();
-            }
+        // Dynamic gradient color for a vibrant effect
+        const gradient = canvasOverlayCtx.createRadialGradient(0, 0, radius / 2, 0, 0, radius + maxBarHeight);
+        gradient.addColorStop(0, '#FF0000');
+        gradient.addColorStop(0.5, '#FFFF00');
+        gradient.addColorStop(1, '#00FF00');
 
-            draw();
+        canvasOverlayCtx.strokeStyle = gradient;
+        canvasOverlayCtx.lineWidth = 2;
+
+        for (let i = 0; i < bufferLength; i++) {
+            const barHeight = (dataArray[i] / 255) * maxBarHeight; // Dynamic scaling of bar height
+            angle = (i / bufferLength) * Math.PI * 2; // Angle for each bar
+            const startX = radius * Math.cos(angle); // Start at the circle's border
+            const startY = radius * Math.sin(angle);
+            const endX = (radius + barHeight) * Math.cos(angle); // Extend outside the circle
+            const endY = (radius + barHeight) * Math.sin(angle);
+
+            // Draw each bar
+            canvasOverlayCtx.beginPath();
+            canvasOverlayCtx.moveTo(startX, startY);
+            canvasOverlayCtx.lineTo(endX, endY);
+            canvasOverlayCtx.stroke();
         }
+
+        canvasOverlayCtx.restore();
+    }
+
+    draw();
+}
     </script>
 </body>
 
