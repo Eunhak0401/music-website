@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>음악 재생 웹 페이지</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="/logo.favicon.png" />
-    <link rel="apple-touch-icon" href="/logo.favicon.png" />
+    <link rel="icon" href="/logo.favicon.png"/>
+    <link rel="apple-touch-icon" href="/logo.favicon.png"/>
     <style>
         html,
         body {
@@ -86,36 +86,32 @@
 
 
         }
-
-        .head_in_box {
+        .head_in_box{
             padding-left: 2%;
             padding-top: 2%;
             padding-bottom: 1%;
             font-weight: bold;
             font-size: 100px;
             font-family: 'Brush Script MT', cursive;
-        }
-
-        .body_name {
-
+        } 
+        .body_name{
+            
             padding-left: 2%;
         }
-
-        .body2_name {
+        .body2_name{
             padding-top: 1%;
             padding-left: 2%;
         }
-
-        .body3_name {
+        .body3_name{
             padding-top: 1%;
             padding-left: 2%;
         }
-
+    
 
         .body,
         .body2,
         .body3 {
-
+            
             width: 100%;
             height: 130px;
             border: solid black;
@@ -144,15 +140,11 @@
         }
 
         .body4 {
-            padding-left: 3%;
             border-radius: 30px;
             margin: 50px 40px;
             height: 180px;
             display: flex;
             justify-content: center;
-
-
-
         }
 
         /* .body4_in_button {
@@ -168,13 +160,13 @@
     </style>
 </head>
 
-<body style="width: auto;">
+<body>
     <section class="section" id="uploadSection">
         <div class="head">
-
-            <div class="head_in_box">Music Web</div>
-
-
+            
+                <div class="head_in_box">Music Web</div>
+            
+            
         </div>
     </section>
     <section class="section" id="uploadImageBackgroundSection">
@@ -287,11 +279,11 @@
 
             source.connect(analyser);
             analyser.connect(audioCtx.destination);
-            analyser.fftSize = 512;
+            analyser.fftSize = 512; 
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
 
-            canvas.width = 800;
+            canvas.width = 800; 
             canvas.height = 800;
 
             function draw() {
@@ -314,7 +306,7 @@
                     const endX = (outerRadius + barHeight) * Math.cos(angle);
                     const endY = (outerRadius + barHeight) * Math.sin(angle);
 
-                    const hue = (i / bufferLength) * 360;
+                    const hue = (i / bufferLength) * 360; 
                     canvasCtx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
                     canvasCtx.lineWidth = 3;
 
