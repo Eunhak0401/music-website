@@ -83,6 +83,7 @@
         .section {
             margin: 0;
             padding: 0;
+<<<<<<< HEAD
 
 
         }
@@ -112,6 +113,15 @@
         .body2,
         .body3 {
             
+=======
+
+
+        }
+
+        .body,
+        .body2,
+        .body3 {
+>>>>>>> 42f96b7d0fb2505a96b2cf0eb9d547b6f00c01e0
             width: 100%;
             height: 130px;
             border: solid black;
@@ -145,7 +155,11 @@
             height: 180px;
             display: flex;
             justify-content: center;
+<<<<<<< HEAD
             
+=======
+            border: solid #373737;
+>>>>>>> 42f96b7d0fb2505a96b2cf0eb9d547b6f00c01e0
 
 
         }
@@ -159,7 +173,11 @@
             border-radius: 25px;
             border: none;
 
+<<<<<<< HEAD
         } */
+=======
+        }
+>>>>>>> 42f96b7d0fb2505a96b2cf0eb9d547b6f00c01e0
     </style>
 </head>
 
@@ -282,25 +300,45 @@
 
             source.connect(analyser);
             analyser.connect(audioCtx.destination);
+<<<<<<< HEAD
             analyser.fftSize = 512; 
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
 
             canvas.width = 800; 
+=======
+            analyser.fftSize = 512; // Higher value for more bars
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            canvas.width = 800; // Increase canvas size for more visibility
+>>>>>>> 42f96b7d0fb2505a96b2cf0eb9d547b6f00c01e0
             canvas.height = 800;
 
             function draw() {
                 requestAnimationFrame(draw);
                 analyser.getByteFrequencyData(dataArray);
 
+<<<<<<< HEAD
+=======
+                // Clear canvas
+>>>>>>> 42f96b7d0fb2505a96b2cf0eb9d547b6f00c01e0
                 canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
                 canvasCtx.save();
                 canvasCtx.translate(canvas.width / 2, canvas.height / 2);
 
+<<<<<<< HEAD
                 const outerRadius = canvas.width / 2.5;
                 const maxBarHeight = 600;
                 let angle;
 
+=======
+                const outerRadius = canvas.width / 2.5; // Larger radius for external bars
+                const maxBarHeight = 600; // Increase maximum bar height
+                let angle;
+
+                // Draw bars with HSL color gradient
+>>>>>>> 42f96b7d0fb2505a96b2cf0eb9d547b6f00c01e0
                 for (let i = 0; i < bufferLength; i++) {
                     const barHeight = (dataArray[i] / 255) * maxBarHeight;
                     angle = (i / bufferLength) * Math.PI * 2;
@@ -309,10 +347,18 @@
                     const endX = (outerRadius + barHeight) * Math.cos(angle);
                     const endY = (outerRadius + barHeight) * Math.sin(angle);
 
+<<<<<<< HEAD
                     const hue = (i / bufferLength) * 360; 
                     canvasCtx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
                     canvasCtx.lineWidth = 3;
 
+=======
+                    const hue = (i / bufferLength) * 360; // Hue changes across the spectrum
+                    canvasCtx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+                    canvasCtx.lineWidth = 3;
+
+                    // Draw each bar
+>>>>>>> 42f96b7d0fb2505a96b2cf0eb9d547b6f00c01e0
                     canvasCtx.beginPath();
                     canvasCtx.moveTo(startX, startY);
                     canvasCtx.lineTo(endX, endY);
