@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>음악 재생 웹 페이지</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="/logo.favicon.png"/>
+    <link rel="apple-touch-icon" href="/logo.favicon.png"/>
     <style>
-        html, body {
+        html,
+        body {
             margin: 0;
             padding: 0;
             height: 100%;
@@ -19,7 +22,9 @@
             padding: 0;
         }
 
-        #fileUploadImage, #fileUploadCenterImage, #fileUploadAudio {
+        #fileUploadImage,
+        #fileUploadCenterImage,
+        #fileUploadAudio {
             display: none;
         }
 
@@ -50,8 +55,8 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
-            border: 1px solid rgba(255, 255, 255, 0.5); 
-            background: transparent; 
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: transparent;
         }
 
         #audioSpectrumOverlay {
@@ -63,7 +68,7 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 2;
-            background: transparent; 
+            background: transparent;
         }
 
         #bgMusic {
@@ -78,27 +83,53 @@
         .section {
             margin: 0;
             padding: 0;
-            
-            
-        }
 
-        .body, .body2, .body3 {
+
+        }
+        .head_in_box{
+            padding-left: 2%;
+            padding-top: 2%;
+            padding-bottom: 1%;
+            font-weight: bold;
+            font-size: 100px;
+            font-family: 'Brush Script MT', cursive;
+        } 
+        .body_name{
+            
+            padding-left: 2%;
+        }
+        .body2_name{
+            padding-top: 1%;
+            padding-left: 2%;
+        }
+        .body3_name{
+            padding-top: 1%;
+            padding-left: 2%;
+        }
+    
+
+        .body,
+        .body2,
+        .body3 {
+            
             width: 100%;
-            height: 365px;
+            height: 130px;
             border: solid black;
             border-radius: 30px;
             display: flex;
             align-items: center;
             padding: 0 30px;
             box-sizing: border-box;
-            
-            
-            
+
+
+
         }
 
-        .body_name, .body2_name, .body3_name {
+        .body_name,
+        .body2_name,
+        .body3_name {
             margin-bottom: 10px;
-            
+
         }
 
         .body_in_button {
@@ -114,28 +145,31 @@
             height: 180px;
             display: flex;
             justify-content: center;
-            border: solid #373737;
             
-            
+
+
         }
 
-        .body4_in_button {
+        /* .body4_in_button {
             background-color: #373737;
             color: white;
             font-size: 72px;
-            width: 100%;
-            height: 100%;
+            width: 80%;
+            height: 80%;
             border-radius: 25px;
             border: none;
-            
-        }
+
+        } */
     </style>
 </head>
 
 <body>
     <section class="section" id="uploadSection">
         <div class="head">
-            <div class="head_in_box">File Upload</div>
+            
+                <div class="head_in_box">Music Web</div>
+            
+            
         </div>
     </section>
     <section class="section" id="uploadImageBackgroundSection">
@@ -149,7 +183,8 @@
     <section class="section" id="uploadImageCenterSection">
         <div class="body2_name">Image Center</div>
         <div class="body2">
-            <button class='body_in_button' onclick="document.getElementById('fileUploadCenterImage').click();">+</button>
+            <button class='body_in_button'
+                onclick="document.getElementById('fileUploadCenterImage').click();">+</button>
             <input type="file" id="fileUploadCenterImage" accept="image/*" />
             <div id="fileNameCenterImage"></div>
         </div>
@@ -184,7 +219,7 @@
             input.addEventListener('change', function (event) {
                 const file = event.target.files[0];
                 if (file) {
-                    if (file.size > 30 * 1024 * 1024) { 
+                    if (file.size > 30 * 1024 * 1024) {
                         alert('파일 크기가 너무 큽니다. 30MB 이하의 파일만 업로드할 수 있습니다.');
                         return;
                     }
@@ -219,7 +254,7 @@
             document.getElementById('uploadImageCenterSection').style.display = 'none';
             document.getElementById('uploadAudioSection').style.display = 'none';
             document.getElementById('PlayWeb').style.display = 'none';
-            
+
             // 업로드된 콘텐츠 표시
             document.getElementById('displaySection').style.display = 'block';
 
@@ -239,59 +274,56 @@
         }
 
         function setupAudioSpectrum(audioElement) {
-    const canvas = document.getElementById('audioSpectrum');
-    const canvasCtx = canvas.getContext('2d');
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioCtx.createAnalyser();
-    const source = audioCtx.createMediaElementSource(audioElement);
+            const canvas = document.getElementById('audioSpectrum');
+            const canvasCtx = canvas.getContext('2d');
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const analyser = audioCtx.createAnalyser();
+            const source = audioCtx.createMediaElementSource(audioElement);
 
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    analyser.fftSize = 4096; // Higher value for more bars
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 512; 
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
 
-    canvas.width = 800; // Increase canvas size for more visibility
-    canvas.height = 800;
+            canvas.width = 800; 
+            canvas.height = 800;
 
-    function draw() {
-        requestAnimationFrame(draw);
-        analyser.getByteFrequencyData(dataArray);
+            function draw() {
+                requestAnimationFrame(draw);
+                analyser.getByteFrequencyData(dataArray);
 
-        // Clear canvas
-        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-        canvasCtx.save();
-        canvasCtx.translate(canvas.width / 2, canvas.height / 2);
+                canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+                canvasCtx.save();
+                canvasCtx.translate(canvas.width / 2, canvas.height / 2);
 
-        const outerRadius = canvas.width / 2.5; // Larger radius for external bars
-        const maxBarHeight = 600; // Increase maximum bar height
-        let angle;
+                const outerRadius = canvas.width / 2.5;
+                const maxBarHeight = 600;
+                let angle;
 
-        // Draw bars with HSL color gradient
-        for (let i = 0; i < bufferLength; i++) {
-            const barHeight = (dataArray[i] / 255) * maxBarHeight;
-            angle = (i / bufferLength) * Math.PI * 2;
-            const startX = outerRadius * Math.cos(angle);
-            const startY = outerRadius * Math.sin(angle);
-            const endX = (outerRadius + barHeight) * Math.cos(angle);
-            const endY = (outerRadius + barHeight) * Math.sin(angle);
+                for (let i = 0; i < bufferLength; i++) {
+                    const barHeight = (dataArray[i] / 255) * maxBarHeight;
+                    angle = (i / bufferLength) * Math.PI * 2;
+                    const startX = outerRadius * Math.cos(angle);
+                    const startY = outerRadius * Math.sin(angle);
+                    const endX = (outerRadius + barHeight) * Math.cos(angle);
+                    const endY = (outerRadius + barHeight) * Math.sin(angle);
 
-            const hue = (i / bufferLength) * 360; // Hue changes across the spectrum
-            canvasCtx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
-            canvasCtx.lineWidth = 3;
+                    const hue = (i / bufferLength) * 360; 
+                    canvasCtx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+                    canvasCtx.lineWidth = 3;
 
-            // Draw each bar
-            canvasCtx.beginPath();
-            canvasCtx.moveTo(startX, startY);
-            canvasCtx.lineTo(endX, endY);
-            canvasCtx.stroke();
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(startX, startY);
+                    canvasCtx.lineTo(endX, endY);
+                    canvasCtx.stroke();
+                }
+
+                canvasCtx.restore();
+            }
+
+            draw();
         }
-
-        canvasCtx.restore();
-    }
-
-    draw();
-}
     </script>
 </body>
 
