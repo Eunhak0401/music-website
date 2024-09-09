@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음악 재생 웹 페이지</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="/logo.favicon.png" />
+    <link rel="apple-touch-icon" href="/logo.favicon.png" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        #displaySection {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #uploadedImageBackground {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        #audioSpectrumCanvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            z-index: 2;
+        }
+
+        #bgMusic {
+            display: none;
+        }
+
+        #myAudio {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 3;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 업로드 섹션 및 재생 섹션 -->
+    <section class="section" id="displaySection">
+        <img id="uploadedImageBackground" alt="Background Image" />
+        <canvas id="audioSpectrumCanvas"></canvas>
+        <div id="myAudio">
+            <button id="playButton">Play</button>
+            <button id="pauseButton">Pause</button>
+        </div>
+        <audio id="bgMusic" controls autoplay loop></audio>
+    </section>
+
+    <script>
+        // 오디오 스펙트럼 설정
+        function setupAudioSpectrum(audioElement) {
+            const canvas = document.getElementById('audioSpectrumCanvas');
+            const ctx = canvas.getContext('2d');
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const analyser = audioCtx.createAnalyser();
+            const source = audioCtx.createMediaElementSource(audioElement);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+
+            analyser.fftSize = 512; // 스펙트럼 개수 설정
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            function drawSpectrum() {
+                requestAnimationFrame(drawSpectrum);
+                analyser.getByteFrequencyData(dataArray);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const barWidth = (canvas.width / bufferLength) * 2.5;
+                let barHeight;
+                let x = 0;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    barHeight = dataArray[i];
+                    ctx.fillStyle = 'rgb(' + (barHeight + 100) + ',50,50)';
+                    ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight);
+                    x += barWidth + 1;
+                }
+            }
+
+            drawSpectrum();
+        }
+
+        // 플레이 버튼 및 오디오 설정
+        const audioElement = document.getElementById('bgMusic');
+        const playButton = document.getElementById('playButton');
+        const pauseButton = document.getElementById('pauseButton');
+
+        playButton.addEventListener('click', () => {
+            audioElement.play();
+            setupAudioSpectrum(audioElement);
+        });
+
+        pauseButton.addEventListener('click', () => {
+            audioElement.pause();
+        });
+    </script>
+    <script>
+        // 뮤직바 설정
+        const progressBar = document.createElement('div');
+        progressBar.id = 'progressBar';
+        progressBar.style.width = '80%';
+        progressBar.style.height = '10px';
+        progressBar.style.backgroundColor = '#ddd';
+        progressBar.style.position = 'absolute';
+        progressBar.style.bottom = '50px';
+        progressBar.style.left = '50%';
+        progressBar.style.transform = 'translateX(-50%)';
+        progressBar.style.borderRadius = '5px';
+        document.body.appendChild(progressBar);
+
+        const progress = document.createElement('div');
+        progress.id = 'progress';
+        progress.style.height = '10px';
+        progress.style.backgroundColor = '#808080';
+        progress.style.width = '0%';
+        progress.style.transition = 'width 0.1s';
+        progress.style.borderRadius = '5px';
+        progressBar.appendChild(progress);
+
+        const circle = document.createElement('div');
+        circle.id = 'circle';
+        circle.style.width = '10px';
+        circle.style.height = '10px';
+        circle.style.backgroundColor = '#000';
+        circle.style.borderRadius = '50%';
+        circle.style.position = 'absolute';
+        circle.style.top = '-2.5px';
+        progressBar.appendChild(circle);
+
+        audioElement.addEventListener('timeupdate', () => {
+            const progressPercent = (audioElement.currentTime / audioElement.duration) * 100;
+            progress.style.width = `${progressPercent}%`;
+            circle.style.left = `${progressPercent}%`;
+        });
+    </script>
+</body>
+
+</html>
