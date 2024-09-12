@@ -52,8 +52,8 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 300px;
-            height: 300px;
+            width: 500px;
+            height: 500px;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
@@ -294,6 +294,10 @@
             canvas.width = 800;
             canvas.height = 800;
 
+            const baseRadius = canvas.width / 2.5;
+            const maxBarHeight = 600;
+            let time = 0;
+
             function draw() {
                 requestAnimationFrame(draw);
                 analyser.getByteFrequencyData(dataArray);
@@ -302,21 +306,23 @@
                 canvasCtx.save();
                 canvasCtx.translate(canvas.width / 2, canvas.height / 2);
 
-                const outerRadius = canvas.width / 2.5;
-                const maxBarHeight = 600;
-                let angle;
+                time += 0.04; // Speed 
 
                 for (let i = 0; i < bufferLength; i++) {
                     const barHeight = (dataArray[i] / 255) * maxBarHeight;
-                    angle = (i / bufferLength) * Math.PI * 2;
-                    const startX = outerRadius * Math.cos(angle);
-                    const startY = outerRadius * Math.sin(angle);
-                    const endX = (outerRadius + barHeight) * Math.cos(angle);
-                    const endY = (outerRadius + barHeight) * Math.sin(angle);
+                    const angle = (i / bufferLength) * Math.PI * 2;
+                    const vibrate = Math.sin(time + i * 0.1) * 20; // Vibrate effect
+                    const wave = Math.sin(time + i * 0.1) * 50; // Wave effect
+
+                    const startX = baseRadius * Math.cos(angle) + wave;
+                    const startY = baseRadius * Math.sin(angle) + wave;
+                    const endX = (baseRadius + barHeight) * Math.cos(angle) + vibrate;
+                    const endY = (baseRadius + barHeight) * Math.sin(angle) + vibrate;
 
                     const hue = (i / bufferLength) * 360;
                     canvasCtx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
-                    canvasCtx.lineWidth = 3;
+                    canvasCtx.lineWidth = 4;
+
 
                     canvasCtx.beginPath();
                     canvasCtx.moveTo(startX, startY);
@@ -329,6 +335,7 @@
 
             draw();
         }
+
     </script>
 </body>
 
